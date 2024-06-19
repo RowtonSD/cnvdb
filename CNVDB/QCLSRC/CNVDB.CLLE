@@ -1,0 +1,57 @@
+/*----------------------------------------------------------------------------*/
+/* Converts an XLS, XLSX or CSV file into a DB2 table                         */
+/*----------------------------------------------------------------------------*/
+             PGM        PARM(&SRC_TYPE &SRC_FILE &SRC_HOST +
+                             &SRC_USER &SRC_PASS &SRC_DB +
+                             &SRC_TABLE &SRC_RDB &DST_TYPE +
+                             &DST_FILE &DST_HOST &DST_USER +
+                             &DST_PASS &DST_DB &DST_TABLE &DST_RDB)
+
+/*----------------------------------------------------------------------------*/
+/* Variables                                                                  */
+/*----------------------------------------------------------------------------*/
+             DCL VAR(&SRC_TYPE) TYPE(*CHAR) LEN(3)
+             DCL VAR(&SRC_FILE) TYPE(*CHAR) LEN(255)
+             DCL VAR(&SRC_HOST) TYPE(*CHAR) LEN(20)
+             DCL VAR(&SRC_USER) TYPE(*CHAR) LEN(20)
+             DCL VAR(&SRC_PASS) TYPE(*CHAR) LEN(20)
+             DCL VAR(&SRC_DB) TYPE(*CHAR) LEN(20)
+             DCL VAR(&SRC_TABLE) TYPE(*CHAR) LEN(20)
+             DCL VAR(&SRC_RDB) TYPE(*CHAR) LEN(10)
+             DCL VAR(&DST_TYPE) TYPE(*CHAR) LEN(3)
+             DCL VAR(&DST_FILE) TYPE(*CHAR) LEN(255)
+             DCL VAR(&DST_HOST) TYPE(*CHAR) LEN(20)
+             DCL VAR(&DST_USER) TYPE(*CHAR) LEN(20)
+             DCL VAR(&DST_PASS) TYPE(*CHAR) LEN(20)
+             DCL VAR(&DST_DB) TYPE(*CHAR) LEN(20)
+             DCL VAR(&DST_TABLE) TYPE(*CHAR) LEN(20)
+             DCL VAR(&DST_RDB) TYPE(*CHAR) LEN(10)
+             DCL VAR(&PYCMD) TYPE(*CHAR) LEN(512)
+
+/*----------------------------------------------------------------------------*/
+/* Run Python Script                                                          */
+/*----------------------------------------------------------------------------*/
+
+             CHGVAR     VAR(&PYCMD) +
+                          VALUE('/QOpenSys/pkgs/bin/python3 +
+                          /opt/cnvxlsdb/cnvdb.py --source_type ''' |< &SRC_TYPE +
+                          |< ''' --source_file ''' |< &SRC_FILE |< +
+                          ''' --source_host ''' |< &SRC_HOST |< +
+                          ''' --source_user ''' |< &SRC_USER |< +
+                          ''' --source_pass ''' |< &SRC_PASS |< +
+                          ''' --source_database ''' |< &SRC_DB |< +
+                          ''' --source_table ''' |< &SRC_TABLE |< +
+                          ''' --source_rdb ''' |< &SRC_RDB |< +
+                          ''' --destination_type ''' |< &DST_TYPE |< +
+                          ''' --destination_file ''' |< &DST_FILE |< +
+                          ''' --destination_host ''' |< &DST_HOST |< +
+                          ''' --destination_user ''' |< &DST_USER |< +
+                          ''' --destination_pass ''' |< &DST_PASS |< +
+                          ''' --destination_database ''' |< &DST_DB |< +
+                          ''' --destination_table ''' |< &DST_TABLE |< +
+                          ''' --destination_rdb ''' |< &DST_RDB |< '''')
+
+
+             QSH CMD(&PYCMD)
+
+             ENDPGM
